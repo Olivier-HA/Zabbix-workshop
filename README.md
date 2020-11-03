@@ -16,9 +16,15 @@ Program :
 -- Server + Frontend + Agent 
 -- Platform up.
 
-- Stop one node and check the failover.
-- Restore the node.
-- Go back to first node.
+- Failover, restoration and back to normal
+-- Stop one node and check the failover.
+-- Restore the node.
+-- Go back to first node.
+
+- Desync a node for specific purposes.
+-- Why ? 
+-- How ? 
+-- Carefull to having no more synced nodes.
 
 - Migration from 4.2 to 5.2
 
