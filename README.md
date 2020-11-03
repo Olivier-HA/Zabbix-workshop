@@ -34,3 +34,13 @@ Limits and drawbacks
 What should we monitor / pay attention to.
 Performance in production.
 
+
+List the services
+docker-compose config --services
+docker-compose up -d --build [service]
+docker-compose logs [service]
+docker-compose stop [service]
+
+
+
+
