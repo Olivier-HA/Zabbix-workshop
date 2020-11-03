@@ -6,9 +6,9 @@ Docker 19, Docker-compose 1.18, possibly be familiar with it.
 Could work with other versions.
 Clone this repository.
 
-Program : 
+Let's setup our platform : 
 
-- Setup our platform.
+
 -- First SQL-node to bootstrap the server
 -- Second SQL-node to join him
 -- Third SQL-node to join him
@@ -16,12 +16,14 @@ Program :
 -- Server + Frontend + Agent 
 -- Platform up.
 
-- Failover, restoration and back to normal
+Test doing failover in case of crash : 
+
+
 -- Stop one node and check the failover.
 -- Restore the node.
 -- Go back to first node.
 
-- Desync a node for specific purposes.
+Desync a node for specific purposes:
 -- Why ? 
 -- How ? 
 -- Carefull to having no more synced nodes.
