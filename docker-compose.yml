@@ -18,63 +18,58 @@ services:
       scalenetDB:
         ipv4_address: 192.168.13.2
     environment:
-      CLUSTER_JOIN: 192.168.13.3,192.168.13.4
-      #CLUSTER_JOIN: 
-      CLUSTER_NAME: 'cluster1'
-      MYSQL_ROOT_PASSWORD: 'secret'
+      #CLUSTER_JOIN: 192.168.13.3,192.168.13.4
+      CLUSTER_JOIN: 
+      CLUSTER_NAME: 'zabbix-db-cluster-1'
+      MYSQL_ROOT_PASSWORD: 'murloc'
     restart: "no"
   db-sql-node-2:
-    depends_on:
-      - db-sql-node-1
     image: percona/percona-xtradb-cluster:5.6
     networks:
       scalenetDB:
         ipv4_address: 192.168.13.3
     environment:
       CLUSTER_JOIN: 192.168.13.2,192.168.13.4
-      CLUSTER_NAME: 'cluster1'
-      MYSQL_ROOT_PASSWORD: 'secret'
+      CLUSTER_NAME: 'zabbix-db-cluster-1'
+      MYSQL_ROOT_PASSWORD: 'murloc'
     restart: "no"
   db-sql-node-3:
-    depends_on:
-      - db-sql-node-1
-      - db-sql-node-2
     image: percona/percona-xtradb-cluster:5.6
     networks:
       scalenetDB:
         ipv4_address: 192.168.13.4
     environment:
       CLUSTER_JOIN: 192.168.13.2,192.168.13.3
-      CLUSTER_NAME: 'cluster1'
-      MYSQL_ROOT_PASSWORD: 'secret'
+      CLUSTER_NAME: 'zabbix-db-cluster-1'
+      MYSQL_ROOT_PASSWORD: 'murloc'
     restart: "no"
 
 
 
-  zabbix-server-1:
-    image: zabbix/zabbix-server-mysql:centos-5.2-latest
+  zabbix-server-42:
+    image: zabbix/zabbix-server-mysql:centos-4.2-latest
     ports:
      - "10051:10051"
     environment:
-      DB_SERVER_HOST: '192.168.13.10'
+      DB_SERVER_HOST: '192.168.13.X'
       DB_SERVER_PORT: 3306
       MYSQL_USER: root
-      MYSQL_PASSWORD: secret
+      MYSQL_PASSWORD: murloc
       ZBX_STARTDBSYNCERS: 1
     networks:
       scalenetDB:
         ipv4_address: 192.168.13.11
 
 
-  zabbix-server-2:
-    image: zabbix/zabbix-server-mysql:alpine-4.2-latest
+  zabbix-server-52:
+    image: zabbix/zabbix-server-mysql:centos-5.2-latest
     ports:
      - "10052:10051"
     environment:
-      DB_SERVER_HOST: 192.168.13.2
+      DB_SERVER_HOST: '192.168.13.2'
       DB_SERVER_PORT: 3306
       MYSQL_USER: root
-      MYSQL_PASSWORD: secret
+      MYSQL_PASSWORD: murloc
     networks:
       scalenetDB:
         ipv4_address: 192.168.13.11
@@ -93,12 +88,12 @@ services:
       ZBX_SERVER_HOST: 192.168.13.11
       ZBX_ACTIVESERVERS: 192.168.13.12
       ZBX_HOSTNAME: "Zabbix server"
-    # # ZBX_HOSTNAMEITEM=system.hostname
 
   zabbix-frontend:
-    image: zabbix/zabbix-web-nginx-mysql:alpine-5.2-latest
+    image: zabbix/zabbix-web-nginx-mysql:centos-4.2-latest
     ports:
-     - "8081:8080"
+     - "8081:80"
+#    - "8081:8080"
      - "8443:8443"
     environment: 
       ZBX_SERVER_HOST: 192.168.13.11
@@ -107,10 +102,13 @@ services:
       DB_SERVER_HOST: 192.168.13.10
       DB_SERVER_PORT: 3306
       MYSQL_USER: root
-      MYSQL_PASSWORD: secret
+      MYSQL_PASSWORD: murloc
     networks:
       scalenetDB:
         ipv4_address: 192.168.13.20
+
+
+
 
 networks:
   scalenetDB:
