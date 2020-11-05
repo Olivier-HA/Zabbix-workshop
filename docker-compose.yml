@@ -18,7 +18,7 @@ services:
       scalenetDB:
         ipv4_address: 192.168.13.41
     environment:
-      #CLUSTER_JOIN: 192.168.13.X
+      #CLUSTER_JOIN: 192.168.13.42,192.168.13.43
       CLUSTER_JOIN: 
       CLUSTER_NAME: 'zabbix-db-cluster-42'
       MYSQL_ROOT_PASSWORD: 'murloc'
@@ -63,7 +63,7 @@ services:
       ZBX_STARTDBSYNCERS: 1
     networks:
       scalenetDB:
-        ipv4_address: 192.168.13.21
+        ipv4_address: 192.168.13.11
 
 
   zabbix-server-52:
@@ -77,7 +77,7 @@ services:
       MYSQL_PASSWORD: murloc
     networks:
       scalenetDB:
-        ipv4_address: 192.168.13.22
+        ipv4_address: 192.168.13.12
 
 
   zabbix-agent:
@@ -102,7 +102,7 @@ services:
       ZBX_SERVER_HOST: 192.168.13.11
       ZBX_SERVER_PORT: 10051
       ZBX_SERVER_NAME: 'Workshop Percona 42'
-      DB_SERVER_HOST: 192.168.13.41
+      DB_SERVER_HOST: 192.168.13.10
       DB_SERVER_PORT: 3306
       MYSQL_USER: root
       MYSQL_PASSWORD: murloc
