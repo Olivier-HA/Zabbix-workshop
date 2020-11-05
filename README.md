@@ -164,6 +164,8 @@ Make another node join the new cluster ? ( consider clearing the data first for 
 Use another Haproxy and failover to the second server so your agents will communicate with the new one ? 
 In our use habits, we just use the second server to upgrade the DB, then upgrade our usual server + point to the fresh upgraded DB and start making the other nodes join.
 
+Also : consider keeping a node with the previous DB version for a while, would help doing a rollback if needed.
+
 ## Additional subjects
 1. ProxySQL could nice features instead of Haproxy ( not tested for now ) : detection of nodes state, point writes to synced or specific node, balande the read requests, manage the failover better. Not tested for production in our case but we would.
 2. Bufferpool + innodblogfile = eat as much RAM as possible but for good reasons.
