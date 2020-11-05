@@ -94,9 +94,18 @@ docker-compose restart proxy
 ```
 
 ## Desync a node for specific purposes:
-- Why ? 
-- How ? 
-- Carefull to having no more synced nodes.
+1.  Why ? Slower node or specific select requests needs, avoid flow control, replication ON, no more write requests.
+```
+mysql --user=root --password=murloc --host=127.0.0.1 -P 3306  zabbix -e "SHOW variables LIKE 'wsrep_provider_options';"
+mysql --user=root --password=murloc --host=127.0.0.1 -P 3306  zabbix -e "SHOW GLOBAL STATUS LIKE 'wsrep_%';"
+```
+2.  How ? 
+```
+mysql --user=root --password=murloc --host=127.0.0.1 -P 3306  zabbix -e "SHOW GLOBAL STATUS LIKE 'wsrep_%';"
+mysql --user=root --password=murloc --host=127.0.0.1 -P 23306  zabbix -e "set global wsrep_desync=ON;"
+mysql --user=root --password=murloc --host=127.0.0.1 -P 23306  zabbix -e "SHOW variables LIKE 'wsrep_des%';"
+```
+3. Carefull to having no more synced nodes.
 
 
 ## Migration from 4.2 to 5.2
