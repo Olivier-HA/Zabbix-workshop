@@ -104,30 +104,73 @@ mysql --user=root --password=murloc --host=127.0.0.1 -P 3306  zabbix -e "SHOW GL
 mysql --user=root --password=murloc --host=127.0.0.1 -P 3306  zabbix -e "SHOW GLOBAL STATUS LIKE 'wsrep_%';"
 mysql --user=root --password=murloc --host=127.0.0.1 -P 23306  zabbix -e "set global wsrep_desync=ON;"
 mysql --user=root --password=murloc --host=127.0.0.1 -P 23306  zabbix -e "SHOW variables LIKE 'wsrep_des%';"
+mysql --user=root --password=murloc --host=127.0.0.1 -P 23306  zabbix -e "set global wsrep_desync=OFF;"
 ```
 3. Carefull to having no more synced nodes.
 
 
 ## Migration from 4.2 to 5.2
 
-- Why this process vs direct server upgrade
-- Isolate one node
-- Bootstrap a new cluster
-- Start a new server
-- Upgrade the isolated node
-- Check that it's working fine
-- Upgrade the whole.
+1. Why this process vs direct server upgrade
 
-## Limits and drawbacks
-## What should we monitor / pay attention to.
-## Performance in production.
+Prepare for upgrade. 
+Keep the service running : monitoring still available.
+Avoid upgrade failure.
+Pre-test the upgrade.
+
+2. Isolate one node
+
+```
+docker-compose stop db-sql-node-3
+docker ps -a | grep node-3
+docker inspect container-id | grep /var/lib/mysql -B 1
+vim /var/lib/docker/volumes/e6409284da5abe2436dd72d4fcc44d59d8deffdd6f0da0b6b535a1781f06ffa0/_data/grastate.dat
+safe to bootstrap to 1
+Change the cluster name to CLUSTER_NAME: 'zabbix-db-cluster-52'
+empty cluster join
+```
+
+3. Bootstrap a new cluster
+
+```
+docker-compose up -d --build db-sql-node-3
+```
 
 
-List the services
-docker-compose config --services
-docker-compose up -d --build [service]
-docker-compose logs [service]
-docker-compose stop [service]
+4. Start a new server
+
+```
+docker-compose up -d --build zabbix-server-52
+```
+
+5. Upgrade the isolated node
+
+```
+Automated step at the start of the server.
+```
+
+6. Check that it's working fine
+
+``` 
+Edit DB host for frontend 52
+docker-compose up -d --build zabbix-frontend-52
+Check the frontend 52 and find back your data
+```
+
+
+7. What is next is your choice : 
+
+Make another node join the new cluster ? ( consider clearing the data first for fresh configuration ) 
+Use another Haproxy and failover to the second server so your agents will communicate with the new one ? 
+In our use habits, we just use the second server to upgrade the DB, then upgrade our usual server + point to the fresh upgraded DB and start making the other nodes join.
+
+## Additional subjects
+1. ProxySQL could nice features instead of Haproxy ( not tested for now ) : detection of nodes state, point writes to synced or specific node, balande the read requests, manage the failover better. Not tested for production in our case but we would.
+2. Bufferpool + innodblogfile = eat as much RAM as possible but for good reasons.
+3. Possible upgrade for the future : timescale DB when the multi-node version is out ? 
+4. Look at your queues ! 
+5. For now how it is going in production : All Fine for 35-40k nvps with 32 core / 256 GB of ram and io1 10k iops volumes for now and for a while.
+
 
 
 
